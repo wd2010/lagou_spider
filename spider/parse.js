@@ -1,29 +1,33 @@
 import cheerio from 'cheerio'
 import {get,post} from './requestUrl.js';
-import {md5Hash} from "../util";
+import {md5Hash,sleep} from "../util";
 import {insert, findOne,find} from './db/DB.js'
 let baseUrl='https://www.lagou.com/';
+let cityUrl=`${baseUrl}jobs/allCity.html`;
+let jobsUrl=`${baseUrl}jobs/positionAjax.json`
 
 export const getTechnology=(pre)=>{
   let $=cheerio.load(pre);
-  let categrayList=$('#sidebar>.mainNavs').find('.menu_box')
-  for(let i=0;i<categrayList.length;i++){
-    let mainTitle=$(categrayList[i]).find('h2').text().trim()
-    let subList=$(categrayList[i]).find('.menu_sub.dn').find('dl')
+  let categrayList=[]
+  let menuBoxs=$('#sidebar>.mainNavs').find('.menu_box')
+  for(let i=0;i<menuBoxs.length;i++){
+    let mainTitle=$(menuBoxs[i]).find('h2').text().trim()
+    let subList=$(menuBoxs[i]).find('.menu_sub.dn').find('dl')
     subList.each((idx,ele)=>{
       let subTitle=$(ele).find('dt>span').text().trim();
-      let technoloageList=$(ele).find('dd').find('a')
-      technoloageList.each((id,element)=>{
-        let technoloageName=$(element).text()
-        let technoloageUrl=$(element).attr('href')
-        console.log(mainTitle, subTitle, technoloageName, technoloageUrl)
+      let technologyList=$(ele).find('dd').find('a')
+      technologyList.each((id,element)=>{
+        let technologyName=$(element).text()
+        let technologyUrl=$(element).attr('href')
+        categrayList.push({mainTitle, subTitle, technologyName, technologyUrl})
       })
     })
   }
+  return categrayList
 }
 
 export const getAllCity=async()=>{
-  let pre=await get({url:baseUrl+'jobs/allCity.html'});
+  let pre=await get({url:cityUrl});
   let $=cheerio.load(pre);
   let cityList=[]
   let trs=$('.word_list').find('tr');
@@ -34,42 +38,31 @@ export const getAllCity=async()=>{
       cityList.push(city)
     })
   })
-  console.log(cityList)
+  return cityList
 }
 
 export const getAllList=async (pre)=>{
   let categrayList=getTechnology(pre);
-  let cityList=getAllCity();
-  console.log(categrayList)
-  /*let len=categrayList.length;
-  for (let i=0;i<len;i++){
-    let categray=categrayList[i]['url'];
-    let type=categrayList[i]['name'];
-    let url=`${baseUrl}${categray}/${categray}.html`;
-    let res = await findOne({url},'Spider')
-    if(res)continue
-    await insert({url},'Spider')
-    let context=await get({url})
-    getList(context,type)
-  }
-  for (let j=0;j<len;j++){
-    let categray=categrayList[j]['url'];
-    let type=categrayList[j]['name'];
-    let k=1
-    do{
-      let url=`${baseUrl}${categray}/${k}.html`;
-      let res = await findOne({url},'Spider')
-      if(res){
-        var context=await get({url});
-        continue
-      }
-      await insert({url},'Spider')
-      var context=await get({url})
-      getList(context,type,'more')
+  let cityList=await getAllCity();
+  for(let i=0;i<categrayList.length;i++){
+    let {technologyName:kd}=categrayList[i]
+    for(let j=0;j<cityList.length;j++){
 
+      let city=cityList[j];
+      let querystr=`city=${city}&needAddtionalResult=false&isSchoolJob=0`
+      for(let pn=0;pn<=47;pn++){
+        let body={first:true, pn,kd}
+        let url=`${jobsUrl}?${querystr}`;
+        console.log('city=',city,' page=',pn,' technology=',kd)
+        let res=await post({url,body})
+        if(pn>37){
+          console.log(res.content)
+        }
+
+        await sleep()
+      }
     }
-    while(k++ <20 || context.statusCode!=404)
-  }*/
+  }
 }
 
 export const getList=(pre,type,more)=>{
