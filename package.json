@@ -1,0 +1,24 @@
+{
+  "name": "sougouwx",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "cheerio": "^1.0.0-rc.2",
+    "mongodb": "^3.0.3",
+    "mongoose": "^5.0.7",
+    "pomelo-logger": "^0.1.7",
+    "request": "^2.83.0",
+    "request-promise": "^4.2.2",
+    "superagent": "^3.8.2"
+  }
+}

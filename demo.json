@@ -1,0 +1,31 @@
+{
+  "job table":{
+    "jobId":1202145,
+    "mainTitle":"技术",
+    "subTitle":"后端",
+    "technology":"Java",
+    "salary":"10k-15k",
+    "experience":"3年",
+    "education":"本科",
+    "jobTpye":"全职",
+    "city":"广州",
+    "region":"黄埔区",
+    "jobAddress":"开创大道2817号 6号线暹岗站 D口出步行200米即到",
+    "jobAdvantage":"打球活动,调薪机会多,员工早餐,18年上市",
+    "jobLables":"体育运动,后端开发",
+    "createTime":"2018-02-28 08:58:56",
+
+  },
+  "company table":{
+    "companyId":1245,
+    "companyName":"阿里巴巴集团",
+    "companyLogo":"http://url.com",
+    "companyWebsite":"www.alibaba.com",
+    "companyLabelList":"项目奖金,五险一金",
+    "companyWord":"让天下没有难做的生意",
+    "industryField":"电子商务,移动互联网",
+    "financeStage":"已上市",
+    "companySize":"2000以上",
+    "address":"杭州"
+  }
+}
